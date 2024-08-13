@@ -20,6 +20,9 @@ compatibility_date = "2024-07-29"
 # [ai]
 # binding = "AI"
 
+[vars]
+AUTH_SECRET = ""
+
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
 database_name = "kaken"
