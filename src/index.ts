@@ -1,10 +1,7 @@
 import { Hono } from "hono";
 import locate from "./locate";
 import srcType from "./srcType";
-
-export type Env = {
-  DB: D1Database;
-};
+import { Env } from "./types";
 
 const app = new Hono<{ Bindings: Env }>();
 
