@@ -6,7 +6,7 @@
     "db:generate": "drizzle-kit generate",
     "db:up": "drizzle-kit up:sqlite",
     "db:create": "wrangler d1 create kaken",
-    "db:local-init": "wrangler d1 execute kaken --local --file=./drizzle/migrations/0000_abandoned_hitman.sql",
+    "db:local-init": "wrangler d1 execute kaken --local --file=drizzle/migrations/0000_equal_ser_duncan.sql",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
