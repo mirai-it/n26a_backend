@@ -6,7 +6,7 @@ CREATE TABLE `locate` (
 CREATE TABLE `count_log` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`count` integer NOT NULL,
-	`timestamp` text DEFAULT (current_timestamp) NOT NULL,
+	`timestamp` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
 	`locate_id` integer NOT NULL,
 	`src_type` integer NOT NULL,
 	FOREIGN KEY (`locate_id`) REFERENCES `locate`(`id`) ON UPDATE no action ON DELETE no action,

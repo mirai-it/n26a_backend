@@ -38,9 +38,12 @@ export const log = sqliteTable("count_log", {
   count: integer("count", {
     mode: "number",
   }).notNull(),
-  timestamp: text("timestamp")
+  // timestamp: text("timestamp")
+  //   .notNull()
+  //   .default(sql`(current_timestamp)`),
+  timestamp: integer("timestamp", { mode: "timestamp" })
     .notNull()
-    .default(sql`(current_timestamp)`),
+    .default(sql`(strftime('%s', 'now'))`),
   locateId: integer("locate_id", {
     mode: "number",
   })
