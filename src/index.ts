@@ -1,9 +1,9 @@
 import { Hono } from "hono";
-import locateNameGetHandler from "./locate/doGet";
-import LocateNamePostHandler from "./locate/doPost";
 import srcTypeGetAllHandler, { srcTypeGetHandler } from "./srcType/doGet";
 import srcTypePostHandler from "./srcType/doPost";
 import srcTypeDeleteHandler from "./srcType/doDelete";
+import locate from "./locate";
+import { basicAuth } from "hono/basic-auth";
 
 export type Env = {
   DB: D1Database;
@@ -17,12 +17,19 @@ app.get("/", (c) => {
   return c.json({ hello: "world" });
 });
 
-app.post("/locate", LocateNamePostHandler);
-app.get("/locate", locateNameGetHandler);
+app.route("/locate", locate);
 
-app.post("/src_type", srcTypePostHandler);
+app.post(
+  "/src_type",
+  basicAuth({ username: "hono", password: "acoolproject" }),
+  srcTypePostHandler
+);
 app.get("/src_type", srcTypeGetAllHandler);
 app.get("/src_type/:id", srcTypeGetHandler);
-app.delete("/src_type/:id", srcTypeDeleteHandler);
+app.delete(
+  "/src_type/:id",
+  basicAuth({ username: "hono", password: "acoolproject" }),
+  srcTypeDeleteHandler
+);
 
 export default app;
