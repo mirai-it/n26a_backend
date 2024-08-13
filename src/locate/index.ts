@@ -1,9 +1,9 @@
 import { drizzle } from "drizzle-orm/d1";
 import { Hono } from "hono";
-import { Env } from "..";
 import { locate } from "../db/schema";
 import { eq } from "drizzle-orm";
 import * as s from "superstruct";
+import { Env } from "../types";
 
 const app = new Hono<{ Bindings: Env }>();
 
