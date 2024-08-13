@@ -3,12 +3,12 @@ import * as s from "superstruct";
 import { locate } from "../db/schema";
 import { Context } from "hono";
 
-const LocateName = s.trimmed(s.size(s.nonempty(s.string()), 1, 100));
+const LocateNameSchema = s.trimmed(s.size(s.nonempty(s.string()), 1, 100));
 
 const createLocate = async (c: Context) => {
   const { name } = await c.req.json();
   try {
-    s.assert(name, LocateName);
+    s.assert(name, LocateNameSchema);
   } catch (error) {
     return c.json(
       {
