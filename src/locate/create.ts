@@ -1,9 +1,8 @@
 import { drizzle } from "drizzle-orm/d1";
 import * as s from "superstruct";
-import { locate } from "../db/schema";
 import { Context } from "hono";
-
-const LocateNameSchema = s.trimmed(s.size(s.nonempty(s.string()), 1, 100));
+import { locate } from "../db/schema";
+import { LocateNameSchema } from "./schema";
 
 const createLocate = async (c: Context) => {
   const { name } = await c.req.json();
