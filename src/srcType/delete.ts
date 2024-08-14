@@ -1,9 +1,9 @@
-import { srcType } from "../db/schema";
 import { drizzle } from "drizzle-orm/d1";
-import { Context } from "hono";
+import { srcType } from "../db/schema";
 import { eq } from "drizzle-orm";
+import { Context } from "hono";
 
-const srcTypeDeleteHandler = async (c: Context) => {
+const deleteSrcType = async (c: Context) => {
   const id = parseInt(c.req.param("id"), 10);
   console.log(id);
   const db = drizzle(c.env.DB);
@@ -18,4 +18,4 @@ const srcTypeDeleteHandler = async (c: Context) => {
   );
 };
 
-export default srcTypeDeleteHandler;
+export default deleteSrcType;

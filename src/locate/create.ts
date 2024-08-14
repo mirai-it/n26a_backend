@@ -1,15 +1,13 @@
 import { drizzle } from "drizzle-orm/d1";
-import { Context } from "hono";
 import * as s from "superstruct";
+import { Context } from "hono";
 import { locate } from "../db/schema";
+import { LocateNameSchema } from "./schema";
 
-const LocateName = s.trimmed(s.size(s.nonempty(s.string()), 1, 100));
-
-const LocateNamePostHandler = async (c: Context) => {
-  // Todo キャッシュコントロールを追加する
+const createLocate = async (c: Context) => {
   const { name } = await c.req.json();
   try {
-    s.assert(name, LocateName);
+    s.assert(name, LocateNameSchema);
   } catch (error) {
     return c.json(
       {
@@ -47,4 +45,4 @@ const LocateNamePostHandler = async (c: Context) => {
   });
 };
 
-export default LocateNamePostHandler;
+export default createLocate;

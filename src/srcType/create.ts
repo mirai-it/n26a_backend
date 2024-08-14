@@ -1,10 +1,11 @@
 import { drizzle } from "drizzle-orm/d1";
+import { srcType } from "../db/schema";
 import { Context } from "hono";
 import * as s from "superstruct";
-import { srcType } from "../db/schema";
+
 const srcTypeName = s.trimmed(s.size(s.nonempty(s.string()), 1, 100));
 
-const srcTypePostHandler = async (c: Context) => {
+const createSrcType = async (c: Context) => {
   const { name } = await c.req.json();
   try {
     s.assert(name, srcTypeName);
@@ -49,4 +50,4 @@ const srcTypePostHandler = async (c: Context) => {
   );
 };
 
-export default srcTypePostHandler;
+export default createSrcType;
