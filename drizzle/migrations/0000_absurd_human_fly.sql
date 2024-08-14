@@ -1,3 +1,9 @@
+CREATE TABLE `admin` (
+	`id` text PRIMARY KEY NOT NULL,
+	`passwordSalt` text NOT NULL,
+	`passwordHash` text NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE `locate` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`name` text(100) NOT NULL
