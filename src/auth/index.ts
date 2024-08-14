@@ -1,17 +1,19 @@
-import { Hono, Next } from "hono";
-import { jwt } from "hono/jwt";
+import { Hono } from "hono";
 import { Env } from "../types";
-import { cors } from "hono/cors";
 import loginHandler from "./login";
 import signUpHandler from "./signup";
+import refreshToken from "./refresh";
+import { jwt } from "hono/jwt";
 
 const app = new Hono<{ Bindings: Env }>();
 
+// 除外
 app.post("/login", loginHandler);
-app.use("*", async (c, next: Next) =>
-  jwt({ secret: c.env.AUTH_SECRET })(c, next)
-);
-app.use("*", cors());
+// 保護されたパス ここから
+app.use("*", async (c, next) => {
+  await jwt({ secret: c.env.AUTH_SECRET })(c, next);
+});
 app.post("/signUp", signUpHandler);
+app.post("/refresh", refreshToken);
 
 export default app;
