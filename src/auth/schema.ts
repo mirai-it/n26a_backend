@@ -3,6 +3,7 @@ import { version as uuidVersion } from "uuid";
 import { validate as uuidValidate } from "uuid";
 
 export const uuid = () =>
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   s.define<string>("uuidv6", (v) => uuidValidate(v) && uuidVersion(v) === 6);
 

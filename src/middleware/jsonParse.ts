@@ -4,7 +4,7 @@ export default async function jsonMiddleware(c: Context, next: Next) {
   if (["POST", "PUT", "PATCH"].includes(c.req.method)) {
     try {
       await c.req.json();
-    } catch (e) {
+    } catch {
       return c.json({ error: "Invalid JSON in request body" }, 400);
     }
   }

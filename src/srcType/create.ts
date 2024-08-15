@@ -10,6 +10,7 @@ const createSrcType = async (c: Context) => {
   try {
     s.assert(name, srcTypeName);
   } catch (error) {
+    console.error(error);
     return c.json(
       {
         msg: "error",

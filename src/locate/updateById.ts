@@ -1,4 +1,5 @@
-import { drizzle } from "drizzle-orm/d1";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { drizzle, DrizzleD1Database } from "drizzle-orm/d1";
 import { eq } from "drizzle-orm";
 import { Context } from "hono";
 import * as s from "superstruct";
@@ -56,7 +57,11 @@ const validateName = (name: string): boolean => {
   }
 };
 
-const updateLocateInDb = async (db: any, id: number, name: string) => {
+const updateLocateInDb = async (
+  db: DrizzleD1Database,
+  id: number,
+  name: string
+) => {
   const result = await db
     .update(locate)
     .set({ name })
