@@ -3,48 +3,58 @@ import { Context } from "hono";
 import * as s from "superstruct";
 import { log } from "../db/schema";
 
-const LogScheme = s.object({
+const LogSchema = s.object({
   locateId: s.integer(),
   srcTypeId: s.integer(),
   count: s.min(s.integer(), 0),
 });
 
 const insertLog = async (c: Context) => {
-  const db = drizzle(c.env.DB);
-  const { locateId, srcTypeId, count } = await c.req.json();
-  const req = { locateId, srcTypeId, count };
-  console.log(req);
-  if (s.is(req, LogScheme)) {
+  try {
+    const db = drizzle(c.env.DB);
+    const requestData = await c.req.json();
+
+    const validatedData = s.create(requestData, LogSchema);
+
     const result = await db
       .insert(log)
       .values({
-        count: req.count,
-        locateId: req.locateId,
-        srcType: req.srcTypeId,
+        count: validatedData.count,
+        locateId: validatedData.locateId,
+        srcType: validatedData.srcTypeId,
       })
       .returning({
         id: log.id,
         count: log.count,
         locateId: log.locateId,
         srcTypeId: log.srcType,
-      })
-      .catch(() => null);
-    if (result === null) {
-      return c.json(
-        {
-          msg: "Database Update Error",
-        },
-        500
-      );
-    } else {
-      return c.json(result[0], 201);
-    }
-  } else {
+      });
+
     return c.json(
       {
-        msg: "Ivalid request",
+        message: "Log entry created successfully",
+        data: result[0],
       },
-      400
+      201
+    );
+  } catch (error) {
+    console.error("Insert log error:", error);
+
+    if (error instanceof s.StructError) {
+      return c.json(
+        {
+          error: "Invalid request data",
+          details: error.message,
+        },
+        400
+      );
+    }
+
+    return c.json(
+      {
+        error: "An error occurred while inserting the log entry",
+      },
+      500
     );
   }
 };
