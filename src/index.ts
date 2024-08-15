@@ -12,6 +12,7 @@ const app = new Hono<{ Bindings: Env }>();
 app.get("/", (c) => {
   return c.json({ hello: "world" });
 });
+app.use("*", jsonMiddleware); // JSON の解析を一律で行う
 app.route("/auth", auth); // 認証を行う場所を除外
 // ------------------------------------------
 app.use("*", authMiddleware);
