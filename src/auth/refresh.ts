@@ -5,19 +5,24 @@ import { TokenSchema } from "./schema";
 import createToken from "./createToken";
 
 const refreshToken = async (c: Context) => {
-  const { oldToken } = await c.req.json();
-  const { payload } = decode(oldToken);
+  try {
+    const { oldToken } = await c.req.json();
+    const { payload } = decode(oldToken);
 
-  if (is(payload, TokenSchema) && payload.exp > Math.floor(Date.now() / 1000)) {
-    const token = await createToken(payload.sub, c.env.AUTH_SECRET);
-    return c.json({ token });
-  } else {
-    return c.json(
-      {
-        msg: "refresh token faild.",
-      },
-      400
-    );
+    if (!is(payload, TokenSchema)) {
+      return c.json({ error: "Invalid token format" }, 400);
+    }
+
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (payload.exp <= currentTimestamp) {
+      return c.json({ error: "Token has expired" }, 401);
+    }
+
+    const newToken = await createToken(payload.sub, c.env.AUTH_SECRET);
+    return c.json({ token: newToken });
+  } catch (error) {
+    console.error("Token refresh error:", error);
+    return c.json({ error: "Failed to refresh token" }, 500);
   }
 };
 
