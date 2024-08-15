@@ -7,6 +7,7 @@
     "db:up": "drizzle-kit up:sqlite",
     "db:create": "wrangler d1 create kaken",
     "db:local-init": "wrangler d1 execute kaken --local --file=drizzle/migrations/0000_absurd_human_fly.sql",
+    "fix": "eslint --fix",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
