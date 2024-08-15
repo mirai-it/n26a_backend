@@ -1,41 +1,53 @@
-import { sign } from "hono/jwt";
 import { Context } from "hono";
 import { is } from "superstruct";
 import { PasswordSchema } from "./schema";
 import { v6 as uuidv6 } from "uuid";
 import { drizzle } from "drizzle-orm/d1";
-
 import { admin } from "../db/schema";
+import bcrypt from "bcryptjs";
 
 const signUpHandler = async (c: Context) => {
-  const { password } = await c.req.json();
-  if (is(password, PasswordSchema)) {
+  try {
+    const { password } = await c.req.json();
+
+    if (!is(password, PasswordSchema)) {
+      return c.json(
+        {
+          error:
+            "Invalid password format. Please ensure it meets the required criteria.",
+        },
+        400
+      );
+    }
+
     const id = uuidv6();
+    const salt = await bcrypt.genSalt(7);
+    const passwordHash = await bcrypt.hash(password, salt);
+
     const db = drizzle(c.env.DB);
     const result = await db
       .insert(admin)
       .values({
-        id: id,
-        passwordHash: password,
-        passwordSalt: password,
+        id,
+        passwordHash,
+        passwordSalt: salt,
       })
-      .returning({ id: admin.id })
-      .catch(() => null);
+      .returning({ id: admin.id });
 
-    if (result === null) {
-      return c.json({ msg: "Account register faild." }, 500);
-    } else {
-      return c.json({
-        msg: "Success register",
-        id: result[0].id,
-      });
-    }
-  } else {
     return c.json(
       {
-        msg: "Password policy err.",
+        message: "Account successfully registered",
+        id: result[0].id,
       },
-      400
+      201
+    );
+  } catch (error) {
+    console.error("Account registration error:", error);
+    return c.json(
+      {
+        error: "Failed to register account. Please try again later.",
+      },
+      500
     );
   }
 };
