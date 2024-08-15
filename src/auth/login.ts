@@ -12,8 +12,8 @@ const loginHandler = async (c: Context) => {
     .from(admin)
     .where(and(eq(admin.id, id), eq(admin.passwordHash, password)));
   if (pass.length > 0) {
-    const token = await createToken(id, c.env.AUTH_SECRET);
-    return c.json({ token });
+    const res = await createToken(id, c.env.AUTH_SECRET);
+    return c.json(res);
   } else {
     return c.json({ msg: "Invalid id or password" }, 400);
   }
