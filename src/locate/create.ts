@@ -5,44 +5,58 @@ import { locate } from "../db/schema";
 import { LocateNameSchema } from "./schema";
 
 const createLocate = async (c: Context) => {
-  const { name } = await c.req.json();
   try {
+    const { name } = await c.req.json();
     s.assert(name, LocateNameSchema);
+
+    const db = drizzle(c.env.DB);
+
+    const result = await db
+      .insert(locate)
+      .values({ name })
+      .returning({
+        id: locate.id,
+        name: locate.name,
+      })
+      .onConflictDoNothing();
+
+    if (result.length === 0) {
+      return c.json(
+        {
+          error: "Locate name already exists",
+          name,
+        },
+        409
+      );
+    }
+
+    return c.json(
+      {
+        message: "Locate name created successfully",
+        timestamp: new Date().toISOString(),
+        data: result[0],
+      },
+      201
+    );
   } catch (error) {
+    if (error instanceof s.StructError) {
+      return c.json(
+        {
+          error: "Invalid locate name",
+          details: error.message,
+        },
+        400
+      );
+    }
+
+    console.error("Create locate error:", error);
     return c.json(
       {
-        msg: "error",
+        error: "An error occurred while creating the locate",
       },
-      400
+      500
     );
   }
-  const db = drizzle(c.env.DB);
-
-  const result = await db
-    .insert(locate)
-    .values({
-      name: name,
-    })
-    .returning({
-      id: locate.id,
-      name: locate.name,
-    })
-    .onConflictDoNothing();
-  if (result.length === 0) {
-    return c.json(
-      {
-        msg: "Locate name already exists",
-        name: name,
-      },
-      409
-    );
-  }
-
-  return c.json({
-    msg: "Locate name created successfully",
-    time: new Date().toISOString(),
-    ...result,
-  });
 };
 
 export default createLocate;
