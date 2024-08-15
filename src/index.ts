@@ -5,7 +5,7 @@ import srcType from "./srcType";
 import numberOfPeople from "./numberOfPeople";
 import auth from "./auth";
 import { cors } from "hono/cors";
-import authMiddleware from "./middleware";
+import { authMiddleware, jsonMiddleware } from "./middleware";
 
 const app = new Hono<{ Bindings: Env }>();
 
