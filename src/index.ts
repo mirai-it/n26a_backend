@@ -6,6 +6,7 @@ import numberOfPeople from "./numberOfPeople";
 import auth from "./auth";
 import { cors } from "hono/cors";
 import { authMiddleware, jsonMiddleware } from "./middleware";
+import { etag } from "hono/etag";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -17,6 +18,7 @@ app.route("/auth", auth); // 認証を行う場所を除外
 // ------------------------------------------
 app.use("*", authMiddleware);
 app.use("*", cors());
+app.use("*", etag());
 app.route("/locate", locate);
 app.route("/src_type", srcType);
 app.route("/number_of_people", numberOfPeople);

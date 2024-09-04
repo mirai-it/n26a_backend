@@ -28,6 +28,7 @@ const insertLog = async (c: Context) => {
         count: log.count,
         locateId: log.locateId,
         srcTypeId: log.srcType,
+        timestamp: log.timestamp,
       });
 
     return c.json(
