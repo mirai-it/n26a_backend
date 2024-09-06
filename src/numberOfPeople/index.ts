@@ -13,7 +13,7 @@ app.get("/", async (c) => {
     .select()
     .from(log)
     .innerJoin(locate, eq(log.locateId, locate.id))
-    .innerJoin(srcType, eq(log.locateId, srcType.id))
+    .innerJoin(srcType, eq(log.srcType, srcType.id))
     .all();
 
   c.header(
